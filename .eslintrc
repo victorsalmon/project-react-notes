@@ -1,0 +1,12 @@
+{
+  "extends": "eslint:recommended",
+  "rules": {
+    // our rules will go here...
+  },
+  "globals": {
+    // any globals we want to allow will go here
+  },
+  "env": {
+    "browser": true
+  }
+}
