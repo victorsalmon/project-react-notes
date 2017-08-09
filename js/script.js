@@ -11,7 +11,7 @@ var Note = React.createClass ({
   renderForm(note) {
     return (
       <div className="note">
-        <textarea ref="newText"></textarea>
+        <textarea ref="newText">{this.props.children}</textarea>
         <button className="buttonBox" onClick={this.save}>Save</button>
       </div>
     )
