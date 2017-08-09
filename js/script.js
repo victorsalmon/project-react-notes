@@ -6,8 +6,9 @@ var StickyNote = React.createClass ({
     alert ("Editing Note");
     this.setState({editing: true})
   },
-  remove() {
-    alert ("Removing Note");
+  remove(id) {
+    var notes = this.state.notes.filter(note => note.id !== id);
+    this.setState({notes});
   },
   renderForm() {
     return (
@@ -39,7 +40,6 @@ var StickyNote = React.createClass ({
   }
 })
 
-
 var Board = React.createClass({
   propTypes: {
     count: function (props, propName) {
@@ -55,12 +55,30 @@ var Board = React.createClass({
   getInitialState() {
     return {
       notes: [
-        "Call Bob",
-        "E-mail Sara",
-        "Eat lunch",
-        "Finish proposal"
+        {id:0, note:"Call Bob"},
+        {id:1, note:"E-mail Sara"},
+        {id:2, note:"Eat lunch"},
+        {id:3, note:"Finish proposal"}
       ]
     }
+  },
+  eachNote(note) {
+    return (<Note key={note.id}
+                  id={note.id}
+                  onChange={this.update}
+                  onRemove={this.remove}>
+                  {note.note}
+            </Note>)
+  },
+  update (newText, id) {
+    var notes = this.state.notes.map(
+      note => (note.id !== id) ?
+        note :
+          {
+            ...note,
+            note: newText
+          }
+    )
   },
   render() {
     return (
