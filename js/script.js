@@ -54,13 +54,24 @@ var Board = React.createClass({
       }
     }
   },
+  add(text){
+    console.log (this.state.notes.length);
+    var notes = [
+      ...this.state.notes,
+      {
+        id: this.nextId(),
+        note: text
+      }
+    ]
+    this.setState({notes})
+  },
   getInitialState() {
     return {
       notes: [
         {id:0, note:"E-mail Susan about project"},
-        {id:1, note:"Confirm lunch with Mark"},
-        {id:2, note:"Update gym membership"},
-        {id:3, note:"Finish UI components"}
+        {id:1, note:"Create new notes"},
+        {id:2, note:"Delete sample notes"},
+        {id:3, note:"Polish this app ;)"}
       ]
     }
   },
@@ -72,6 +83,23 @@ var Board = React.createClass({
                   {note.note}
             </Note>)
   },
+  nextId(){
+    return this.state.notes.length;
+  },
+  remove (id) {
+    var notes = this.state.notes.filter(note => note.id !== id);
+    this.setState({notes});
+  },
+  render() {
+    return (
+      <div className='board'>
+        {this.state.notes.map(this.eachNote)}
+        <div class="buttonBox">
+          <button onClick={() => this.add()}>+</button>
+        </div>
+      </div>
+    )
+  },
   update (newText, id) {
     var notes = this.state.notes.map(
       note => (note.id !== id) ?
@@ -82,17 +110,6 @@ var Board = React.createClass({
           }
     );
     this.setState({notes});
-  },
-  remove (id) {
-    var notes = this.state.notes.filter(note => note.id !== id);
-    this.setState({notes});
-  },
-  render() {
-    return (
-      <div className='board'>
-        {this.state.notes.map(this.eachNote)}
-      </div>
-    )
   }
 })
 
