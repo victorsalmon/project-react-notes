@@ -1,16 +1,14 @@
-var StickyNote = React.createClass ({
+var Note = React.createClass ({
   getInitialState() {
     return {editing: false}
   },
   edit() {
-    alert ("Editing Note");
     this.setState({editing: true})
   },
-  remove(id) {
-    var notes = this.state.notes.filter(note => note.id !== id);
-    this.setState({notes});
+  remove(){
+    this.props.onRemove (this.props.id);
   },
-  renderForm() {
+  renderForm(note) {
     return (
       <div className="note">
         <textarea ref="newText"></textarea>
@@ -34,11 +32,15 @@ var StickyNote = React.createClass ({
                                 : this.renderDisplay();
   },
   save() {
-    var val = this.ref.val;
-    alert (val);
-    this.setState({editing: false})
+    this.props.onChange(this.refs.newText.value, this.props.id)
+    this.setState ({editing: false})
   }
 })
+
+
+
+
+
 
 var Board = React.createClass({
   propTypes: {
@@ -55,10 +57,10 @@ var Board = React.createClass({
   getInitialState() {
     return {
       notes: [
-        {id:0, note:"Call Bob"},
-        {id:1, note:"E-mail Sara"},
-        {id:2, note:"Eat lunch"},
-        {id:3, note:"Finish proposal"}
+        {id:0, note:"E-mail Susan about project"},
+        {id:1, note:"Confirm lunch with Mark"},
+        {id:2, note:"Update gym membership"},
+        {id:3, note:"Finish UI components"}
       ]
     }
   },
@@ -78,14 +80,17 @@ var Board = React.createClass({
             ...note,
             note: newText
           }
-    )
+    );
+    this.setState({notes});
+  },
+  remove (id) {
+    var notes = this.state.notes.filter(note => note.id !== id);
+    this.setState({notes});
   },
   render() {
     return (
       <div className='board'>
-      {this.state.notes.map((note, i) => {
-        return <StickyNote key={i}>{note}</StickyNote>
-      })}
+        {this.state.notes.map(this.eachNote)}
       </div>
     )
   }
