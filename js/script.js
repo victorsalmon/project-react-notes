@@ -4,15 +4,21 @@ var Note = React.createClass ({
   },
   componentWillMount() {
     this.style = {
-      right: this.randomBetween(0, window.innerWidth - 150, 'px'),
-      top: this.randomBetween(0, window.innerHeight - 150, 'px')
+      right: this.randomBetween(0, window.innerWidth - 500, 'px'),
+      top: this.randomBetween(50, window.innerHeight, 'px')
+    }
+  },
+  componentDidUpdate() {
+    if (this.state.editing){
+      this.refs.newText.focus()
+      this.refs.newText.select()
     }
   },
   edit() {
     this.setState({editing: true})
   },
-  randomBetween (x, y, s){
-    return (x + Math.ceil(Math.random() * (y-x))) + s
+  randomBetween (x, y, unit){
+    return (x + Math.ceil(Math.random() * (y-x))) + unit
   },
   remove(){
     this.props.onRemove (this.props.id);
@@ -39,22 +45,22 @@ var Note = React.createClass ({
     )
   },
   render() {
-    return (this.state.editing) ? this.renderForm()
-                                : this.renderDisplay();
+    return  <ReactDraggable>
+              {(this.state.editing) ? this.renderForm()
+                                    : this.renderDisplay()} 
+            </ReactDraggable>
   },
   save() {
     this.props.onChange(this.refs.newText.value, this.props.id)
     this.setState ({editing: false})
+  },
+  shouldComponentUpdate(nextProps, nextState){
+    return this.props.children !== nextProps.children || this.state !== nextState
   }
 })
 
-
-
-var Box = React.createClass({
-  
-})
-
-
+// var Box = React.createClass({
+// })
 
 var Board = React.createClass({
   propTypes: {
@@ -79,14 +85,23 @@ var Board = React.createClass({
     ]
     this.setState({notes})
   },
+  componentWillMount(){
+    if (this.props.count) {
+      var url = `http://baconipsum.com/api/?type=all-meat&sentences=${this.props.count}`
+      fetch (url)
+        .then(results => results.json())
+        .then(array => array [0])
+        .then(text => text.split('. '))
+        .then (array => array.forEach(
+          sentence => this.add(sentence)))
+        .catch(function(err){
+          console.log ("Problem connecting to the API: ", err)
+          });
+    }
+  },
   getInitialState() {
     return {
-      notes: [
-        {id:0, note:"E-mail Susan about project"},
-        {id:1, note:"Create new notes"},
-        {id:2, note:"Delete sample notes"},
-        {id:3, note:"Polish this app ;)"}
-      ]
+      notes: []
     }
   },
   eachNote(note) {
@@ -127,4 +142,4 @@ var Board = React.createClass({
   }
 })
 
-ReactDOM.render(<Board></Board>,  document.getElementById('react-container'));
+ReactDOM.render(<Board count={5}></Board>,  document.getElementById('react-container'));
