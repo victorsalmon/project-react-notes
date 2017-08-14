@@ -2,15 +2,25 @@ var Note = React.createClass ({
   getInitialState() {
     return {editing: false}
   },
+  componentWillMount() {
+    this.style = {
+      right: this.randomBetween(0, window.innerWidth - 150, 'px'),
+      top: this.randomBetween(0, window.innerHeight - 150, 'px')
+    }
+  },
   edit() {
     this.setState({editing: true})
+  },
+  randomBetween (x, y, s){
+    return (x + Math.ceil(Math.random() * (y-x))) + s
   },
   remove(){
     this.props.onRemove (this.props.id);
   },
   renderForm(note) {
     return (
-      <div className="note">
+      <div  className="note"
+            style={this.style}>
         <textarea ref="newText">{this.props.children}</textarea>
         <button className="buttonBox" onClick={this.save}>Save</button>
       </div>
@@ -18,7 +28,8 @@ var Note = React.createClass ({
   },
   renderDisplay() {
     return (
-      <div className="note">
+      <div  className="note"
+            style={this.style}>
         <p>{this.props.children}</p>
         <div className="buttonBox">
           <button onClick={this.edit}>Edit</button>
@@ -39,6 +50,9 @@ var Note = React.createClass ({
 
 
 
+var Box = React.createClass({
+  
+})
 
 
 
